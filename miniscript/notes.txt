@@ -1,0 +1,45 @@
+multi(1,pk(C),pk(C))
+
+1. and(pk(C),or(pk(C),time(1000)))
+and_cat(check_v(pk(?)),or_c(pk(?),time(1000)))
+
+and_c(check_v(pk(?)),or_c(pk(?),time(1000)))
+
+[pk] CHECKSIGVERIFY [pk] CHECKSIG IFDUP NOTIF 0xe803 CHECKSEQUENCEVERIFY ENDIF
+
+2. or(and(pk(C),pk(C)),and(pk(C),time(1000)))
+or_if(and_cat(check_v(pk(?)),time(1000)),and_cat(check_v(pk(?)),pk(?)))
+
+or_if(and_c(check_v(pk(?)),time(1000)),and_c(check_v(pk(?)),pk(?)))
+
+IF [pk] CHECKSIGVERIFY 0xe803 CHECKSEQUENCEVERIFY ELSE [pk] CHECKSIGVERIFY [pk] CHECKSIG ENDIF
+or(multi(2,C,C),and(pk(C),time(1000)))
+2 [pk] [pk] 2 CHECKMULTISIG IFDUP NOTIF [pk] CHECKSIGVERIFY 0xe803 CHECKSEQUENCEVERIFY ENDIF
+
+3. thresh(2,and(pk(C),pk(C)),and(pk(C),time(1000)),or(pk(C),pk(C)))
+
+thresh(2,and_bool(pk(?),pk_w(?)),wrap(and_c(pk(?),time_f(1000))),wrap(or_bool(pk(?),pk_w(?))))
+
+[pk] CHECKSIG SWAP [pk] CHECKSIG BOOLAND TOALTSTACK [pk] CHECKSIG NOTIF 0 ELSE 0xe803 CHECKSEQUENCEVERIFY 0NOTEQUAL ENDIF FROMALTSTACK ADD TOALTSTACK [pk] CHECKSIG SWAP [pk] CHECKSIG BOOLOR FROMALTSTACK ADD 2 EQUAL
+
+4. and(and(thresh(1,and(pk(C),pk(C)),time(1000),and(pk(C),pk(C))),thresh(2,or(pk(C),pk(C)),or(pk(C),pk(C)),and(pk(C),time(1000)))),or(pk(C),pk(C)))
+
+and_cat(or_cont(pk(?),check_v(pk(?))),and_cat(thres_v(1,and_bool(pk(?),pk_w(?)),time_w(1000),wrap(and_bool(pk(?),pk_w(?)))),thresh(2,or_bool(pk(?),pk_w(?)),wrap(or_bool(pk(?),pk_w(?))),wrap(and_c(pk(?),time_f(1000))))))
+
+[pk] CHECKSIG NOTIF [pk] CHECKSIGVERIFY ENDIF [pk] CHECKSIG SWAP [pk] CHECKSIG BOOLAND SWAP DUP IF 0xe803 CHECKSEQUENCEVERIFY DROP ENDIF ADD TOALTSTACK [pk] CHECKSIG SWAP [pk] CHECKSIG BOOLAND FROMALTSTACK ADD 1 EQUALVERIFY [pk] CHECKSIG SWAP [pk] CHECKSIG BOOLOR TOALTSTACK [pk] CHECKSIG SWAP [pk] CHECKSIG BOOLOR FROMALTSTACK ADD TOALTSTACK [pk] CHECKSIG NOTIF 0 ELSE 0xe803 CHECKSEQUENCEVERIFY 0NOTEQUAL ENDIF FROMALTSTACK ADD 2 EQUAL
+
+1 [pk] [pk] 2 CHECKMULTISIG
+
+The example script we have here is and_v(vc:pk(?),or_c(c:pk(?),after(1000))). When encoding to script, we first see and_v which means encode both branches, one after the other. We have two conditions under and_v - vc:pk() and or_c(c:pk(?),after(1000)). vc:pk() encodes directly as [pk] CHECKSIGVERIFY. or_c encodes as [left] IFDUP NOTIF [right] ENDIF, c:pk() encodes as [pk] CHECKSIG and after(1000) encodes to 1000 CHECKSEQUENCEVERIFY.
+
+c:or_i(and_v(vc:pk(?),pk(?)),and_v(v:time(1000),pk(?)))
+c:or_i(and_v(vc:pk(?),pk(?)),and_v(v:after(1000),pk(?)))
+
+We first see c:or_i which encodes to IF [left] ELSE [right] ENDIF CHECKSIG. The left branch under that is and_v(vc:pk(),pk()) which gets encoded to [pk] CHECKSIGVERIFY [pk] and the right branch gets encoded to 1000 CHECKSEQUENCEVERIFY VERIFY [pk]. We don't have a checksig on the trailing pubkey in both brances since we have a final CHECKSIG at the end.
+
+thresh(2,and(pk(C),pk(C)),and(pk(C),after(1000)),or(pk(C),pk(C)))
+thresh(2,and_bool(pk(?),pk_w(?)),wrap(and_c(pk(?),time_f(1000))),wrap(or_bool(pk(?),pk_w(?))))
+
+[pk] CHECKSIG SWAP [pk] CHECKSIG BOOLAND TOALTSTACK [pk] CHECKSIG NOTIF 0 ELSE 0xe803 CHECKSEQUENCEVERIFY 0NOTEQUAL ENDIF FROMALTSTACK ADD TOALTSTACK [pk] CHECKSIG SWAP [pk] CHECKSIG BOOLOR FROMALTSTACK ADD 2 EQUAL
+
+In this example, the encoder takes the first branch, checks the signatures from the two pubkeys and then pushes the result to the altstack. Then it moves to the middle branch, where it checks for the pubkey signature and if false returns 0 (since we need both the signature and the timeout). If true, it checks for the timeout and returns the result. Then we take the result from the left branch (which is now on the altstack), push it onto the main stack, add the result from the middle branch and push the result (ie left branch + middle branch) onto the alt stack again. We then evaluate the right branch, retrieve the result of the other two branches from the altstack, add and check if it equals two.
