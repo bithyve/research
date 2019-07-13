@@ -4,7 +4,7 @@ import (
 	"log"
 	"math/big"
 
-	btcutils "github.com/Varunram/essentials/crypto/btc/utils"
+	btcutils "github.com/bithyve/research/utils"
 )
 
 func MuSig2CreateSign(x1, X1x, X1y, x2, X2x, X2y, r1, R1x, R1y, r2, R2x, R2y *big.Int,

@@ -8,8 +8,8 @@ import (
 	"log"
 	"math/big"
 
-	"github.com/Varunram/essentials/crypto/btc/base58"
-	"github.com/Varunram/essentials/crypto/btc/hdwallet"
+	"github.com/bithyve/research/base58"
+	"github.com/bithyve/research/hdwallet"
 	"github.com/btcsuite/btcd/btcec"
 )
 

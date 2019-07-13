@@ -4,7 +4,7 @@ import (
 	"log"
 	"math/big"
 
-	btcutils "github.com/Varunram/essentials/crypto/btc/utils"
+	btcutils "github.com/bithyve/research/utils"
 )
 
 func ConstructAdaptorSig(x, Px, Py *big.Int, m []byte) (*big.Int,

@@ -5,7 +5,7 @@ import (
 	"log"
 	"math/big"
 
-	btcutils "github.com/Varunram/essentials/crypto/btc/utils"
+	btcutils "github.com/bithyve/research/utils"
 )
 
 func SchnorrSign(k, Px, Py *big.Int, m []byte, privkey *big.Int) (*big.Int, *big.Int, *big.Int) {

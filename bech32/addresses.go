@@ -1,8 +1,8 @@
 package bech32
 
 import (
-	"github.com/Varunram/essentials/crypto/btc/base58"
-	btcutils "github.com/Varunram/essentials/crypto/btc/utils"
+	"github.com/bithyve/research/base58"
+	btcutils "github.com/bithyve/research/utils"
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/skip2/go-qrcode"
 

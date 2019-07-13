@@ -7,7 +7,7 @@ import (
 	"log"
 	"math/big"
 
-	btcutils "github.com/Varunram/essentials/crypto/btc/utils"
+	btcutils "github.com/bithyve/research/utils"
 	"github.com/btcsuite/btcd/btcec"
 )
 

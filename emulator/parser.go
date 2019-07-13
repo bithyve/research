@@ -4,11 +4,11 @@ import (
 	"github.com/pkg/errors"
 	"log"
 
-	bech32 "github.com/Varunram/essentials/crypto/btc/bech32"
-	bip39 "github.com/Varunram/essentials/crypto/btc/bip39"
-	hdwallet "github.com/Varunram/essentials/crypto/btc/hdwallet"
-	paynym "github.com/Varunram/essentials/crypto/btc/paynym"
-	sss "github.com/Varunram/essentials/sss"
+	bech32 "github.com/bithyve/research/bech32"
+	bip39 "github.com/bithyve/research/bip39"
+	hdwallet "github.com/bithyve/research/hdwallet"
+	paynym "github.com/bithyve/research/paynym"
+	sss "github.com/bithyve/research/sss"
 	utils "github.com/Varunram/essentials/utils"
 )
 

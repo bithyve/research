@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/Varunram/essentials/crypto/btc/bip39/wordlists"
+	"github.com/bithyve/research/bip39/wordlists"
 )
 
 type vector struct {

@@ -37,8 +37,8 @@ import (
 	"github.com/pkg/errors"
 	"math/big"
 
-	"github.com/Varunram/essentials/crypto/btc/base58"
-	btcutils "github.com/Varunram/essentials/crypto/btc/utils"
+	"github.com/bithyve/research/base58"
+	btcutils "github.com/bithyve/research/utils"
 	utils "github.com/Varunram/essentials/utils"
 )
 

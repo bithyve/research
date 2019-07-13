@@ -14,7 +14,7 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/Varunram/essentials/crypto/btc/bip39/wordlists"
+	"github.com/bithyve/research/bip39/wordlists"
 	"golang.org/x/crypto/pbkdf2"
 )
 
