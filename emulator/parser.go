@@ -4,12 +4,12 @@ import (
 	"github.com/pkg/errors"
 	"log"
 
+	utils "github.com/Varunram/essentials/utils"
 	bech32 "github.com/bithyve/research/bech32"
 	bip39 "github.com/bithyve/research/bip39"
 	hdwallet "github.com/bithyve/research/hdwallet"
 	paynym "github.com/bithyve/research/paynym"
 	sss "github.com/bithyve/research/sss"
-	utils "github.com/Varunram/essentials/utils"
 )
 
 // parse all the inputs that the user might provide

@@ -37,9 +37,9 @@ import (
 	"github.com/pkg/errors"
 	"math/big"
 
+	utils "github.com/Varunram/essentials/utils"
 	"github.com/bithyve/research/base58"
 	btcutils "github.com/bithyve/research/utils"
-	utils "github.com/Varunram/essentials/utils"
 )
 
 // declare version bytes and HMAC key

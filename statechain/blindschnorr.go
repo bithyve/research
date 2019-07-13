@@ -1,4 +1,4 @@
-package main
+package statechain
 
 import (
 	"crypto/rand"
