@@ -1,4 +1,4 @@
-package main
+package thor
 
 import (
 	"encoding/json"

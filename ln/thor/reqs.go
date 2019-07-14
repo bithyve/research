@@ -1,4 +1,4 @@
-package main
+package thor
 
 import (
 	"io"
@@ -6,6 +6,15 @@ import (
 	"log"
 	"net/http"
 )
+
+var baseAPIURL = "https://api.bitrefill.com/v1"
+var APIKey = ""    // send an email out to support@bitrefill.com for the API key
+var APISecret = "" // send an email out to support@bitrefill.com for the API key
+
+func SetAPIParams(key string, secret string) {
+	APIKey = key
+	APISecret = secret
+}
 
 // GetRequest is a handler that makes it easy to send out GET requests
 // we don't set timeouts here because block times can be variable and a single request
