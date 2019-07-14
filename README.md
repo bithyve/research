@@ -1,5 +1,7 @@
 # Bithyve Research
 
+[![Build Status](https://travis-ci.com/bithyve/research.svg?branch=master)](https://travis-ci.com/bithyve/research)
+
 This repository contains [bithyve](https://bithyve.com) research into bitcoin ideas and primitives. Each subrepo is its own package and should build on its own without the others.
 
 ### Contributing
