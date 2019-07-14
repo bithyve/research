@@ -47,8 +47,8 @@ func main() {
 	promptColor := color.New(color.FgHiYellow).SprintFunc()
 	whiteColor := color.New(color.FgHiWhite).SprintFunc()
 	rl, err := readline.NewEx(&readline.Config{
-		Prompt:      promptColor("emulator") + whiteColor("# "),
-		HistoryFile: HomeDir + "/history_emulator.txt",
+		Prompt:      promptColor("brd") + whiteColor("# "),
+		HistoryFile: HomeDir + "/history_brd.txt",
 		// AutoComplete: autoComplete(),
 	})
 
