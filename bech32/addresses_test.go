@@ -10,7 +10,7 @@ func TestAddr(t *testing.T) {
 	var bech32Adr = []string{"tb1qmsu7ck0tun9qe2wgthu35xcu6asa5aq5tejh02", "bc1q6sh5tzw0c650hutmm58s7srdut8qrg05a4kfmd"}
 	var base58Adr = []string{"n1bQLqMS86rjrWLVkN78FdaCzjMjQwZ2k1", "1LLvtAD6EbNcSc5QXMo46bAdWkEHmbM8xg"}
 
-	for i, _ := range bech32Adr {
+	for i := range bech32Adr {
 		base58Conv, err := Bech32ToBase58Addr(bech32Adr[i][0:2], bech32Adr[i])
 		if err != nil {
 			log.Fatal(err)

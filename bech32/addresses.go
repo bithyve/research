@@ -132,7 +132,7 @@ func WIFToPrivateKey(wif string, compressed bool) ([]byte, error) {
 
 func CheckCheckSum(wif string) error {
 	decodedString := base58.Decode(wif)
-	provCheckSum := decodedString[len(decodedString)-4 : len(decodedString)]
+	provCheckSum := decodedString[len(decodedString)-4:]
 	decodedString = decodedString[0 : len(decodedString)-4]
 
 	doubleSha := btcutils.DoubleSha256(decodedString)

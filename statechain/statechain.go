@@ -203,6 +203,7 @@ func teststatechain() {
 	userSig = BlindClientUnblind(alpha, userSig)
 	sig = BlindClientUnblind(alpha, sig)
 
+	log.Println("USERSIG=", userSig, "SIG=", sig)
 	log.Println("Passing transitory key: ", x, " to C: ", c, "MUSIG PUBKEY: ", AX, "L=", L)
 }
 

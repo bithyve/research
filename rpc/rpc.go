@@ -274,6 +274,7 @@ func VerifyChain(nBlocks string, checkLevel string) ([]byte, error) {
 		temp = append(temp, checkLevelInt)
 	}
 
+	payload.Params = temp
 	return PostReq(payload)
 }
 
