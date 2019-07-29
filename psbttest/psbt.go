@@ -76,7 +76,7 @@ type PsbtReturn struct {
 
 type FinalizePSBTReturn struct {
 	Result struct {
-		Hex string `json:"hex"`
+		Hex      string `json:"hex"`
 		Complete bool
 	} `json:"result"`
 	Error string `json:"error"`
@@ -85,116 +85,11 @@ type FinalizePSBTReturn struct {
 
 type SendRawTransactionReturn struct {
 	Result string `json:"result"`
-	Error string `json:"error"`
-	Id    string `json:"id"`
+	Error  string `json:"error"`
+	Id     string `json:"id"`
 }
 
 func main() {
-	/*
-
-						seed, err := hdwallet.GenSeed(256)
-						if err != nil {
-							log.Fatal(err)
-						}
-
-						masterprv := hdwallet.MasterKey(seed)
-						log.Println("Master priv key: ", masterprv)
-						// Convert a private key to public key
-						masterpub := masterprv.Pub()
-						log.Println("MASTER PUBKEY: ", masterpub)
-
-						// Generate new child key based on private or public key
-						childprv, err := masterprv.Child(0)
-						childpub, err := masterpub.Child(0)
-
-						log.Println("childprv: ", childprv, "childpub address: ", childpub.Address())
-						// Create bitcoin address from public key
-						address := childpub.Address()
-						log.Println("childpub base58 address: ", address)
-
-						address2, err := childpub.AddressBech32()
-						if err != nil {
-							log.Fatal(err)
-						}
-						log.Println("childpub bech32 address: ", address2)
-						addressBech32, err := bech32.GetNewBech32Address()
-						if err != nil {
-							log.Fatal(err)
-						}
-						log.Println("new bech32 address: ", addressBech32)
-
-							log.Println("childpub address: ", address)
-							byteString := utils.DoubleSha256([]byte("blah"))
-							log.Println("BYTESTRING: ", byteString)
-							stringHash := hex.EncodeToString(byteString)
-							log.Println("DST: ", stringHash)
-
-					seed, err := hdwallet.GenSeed(256)
-					if err != nil {
-						log.Fatal(err)
-					}
-
-					masterprv := hdwallet.MasterKey(seed)
-					// log.Println("Master priv key: ", masterprv)
-					// Convert a private key to public key
-					masterpub := masterprv.Pub()
-					// log.Println("MASTER PUBKEY: ", masterpub)
-
-					// Generate new child key based on private or public key
-					_, err = masterprv.Child(0)
-					childpub, err := masterpub.Child(0)
-
-					// log.Println("childprv: ", childprv, "childpub address: ", childpub.Address())
-					// Create bitcoin address from public key
-					address := childpub.Address()
-					log.Println("childpub base58 address: ", address)
-
-					bech32Address, err := bech32.GetNewp2wpkh()
-					if err != nil {
-						log.Fatal(err)
-					}
-					log.Println("bech32 address: ", bech32Address)
-
-					base58Conv, err := bech32.Bech32ToBase58Addr("bc", "bc1q6sh5tzw0c650hutmm58s7srdut8qrg05a4kfmd")
-					if err != nil {
-						log.Fatal(err)
-					}
-
-					log.Println("Base 58 adr: ", base58Conv)
-
-
-				wordSizeMap := make(map[int]int, 5)
-
-				wordSizeMap[12] = 128
-				wordSizeMap[15] = 160
-				wordSizeMap[18] = 192
-				wordSizeMap[21] = 224
-				wordSizeMap[24] = 256
-
-				wordSize := 12
-				entropy, _ := bip39.NewEntropy(wordSizeMap[wordSize])
-				mnemonic, err := bip39.NewMnemonic(entropy)
-				if err != nil {
-					log.Fatal(err)
-				}
-				log.Println("MNEMONIC: ", mnemonic)
-
-			privkey, err := hex.DecodeString("0C28FCA386C7A227600B2FE50B7CAE11EC86D3BF1FBE471BE89827E19D72AA1D")
-			if err != nil {
-				log.Fatal(err)
-			}
-			wif, err := bech32.PrivKeyToWIF("mainnet", false, privkey)
-			if err != nil {
-				log.Fatal(err)
-			}
-			if wif != "5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ" {
-				log.Fatal("noo")
-			}
-		bech32.ExportToQrCode("TOPSECRET", "test.png")
-		byteString := btcutils.Sha256([]byte("blah"), []byte("blah"))
-		log.Println(hex.EncodeToString(byteString))
-		log.Println(byteString)
-	*/
 	log.Println(utils.ToBigInt("100"))
 
 	// Aalice, Abob, Acarol
@@ -356,7 +251,7 @@ func main() {
 		log.Fatal(err)
 	}
 
- 	resultData, err := rpc.SendRawTransaction(T.Result.Hex, false)
+	resultData, err := rpc.SendRawTransaction(T.Result.Hex, false)
 	if err != nil {
 		log.Fatal(err)
 	}
