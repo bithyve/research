@@ -64,6 +64,31 @@ type AddMultisigAddressReturn struct {
 	Id    string `json:"id"`
 }
 
+type PsbtReturn struct {
+	Result struct {
+		Psbt      string  `json:"psbt"`
+		Fee       float64 `json:"fee"`
+		ChangePos int
+	} `json:"result"`
+	Error string `json:"error"`
+	Id    string `json:"id"`
+}
+
+type FinalizePSBTReturn struct {
+	Result struct {
+		Hex string `json:"hex"`
+		Complete bool
+	} `json:"result"`
+	Error string `json:"error"`
+	Id    string `json:"id"`
+}
+
+type SendRawTransactionReturn struct {
+	Result string `json:"result"`
+	Error string `json:"error"`
+	Id    string `json:"id"`
+}
+
 func main() {
 	/*
 
@@ -284,11 +309,65 @@ func main() {
 
 	// construct a raw payload since we can't seem to parse the json (first param is [] and can't be parsed)
 	rawpayload := `{"jsonrpc":"1.0","id":"curltext","method":"walletcreatefundedpsbt","params":[`
-	rawpayload += `[],{"` + Asend.Result + `":1},0]}`
+	rawpayload += `[],{"` + Asend.Result + `":50},0]}`
 
-	check, err := rpc.WalletCreateFundedPSBT(inputs, outputs, locktime, options, bip32Derivs, rawpayload)
+	psbtData, err := rpc.WalletCreateFundedPSBT(inputs, outputs, locktime, options, bip32Derivs, rawpayload)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("CHECK STATUS: ", string(check))
+
+	var psbt PsbtReturn
+	err = json.Unmarshal(psbtData, &psbt)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	P2data, err := rpc.WalletProcessPSBT(psbt.Result.Psbt, true, "", false)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var P2 PsbtReturn
+	err = json.Unmarshal(P2data, &P2)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Bob validates P here
+	P3data, err := rpc.WalletProcessPSBT(P2.Result.Psbt, true, "", false)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var P3 PsbtReturn
+	err = json.Unmarshal(P3data, &P3)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	Tdata, err := rpc.FinalizePSBT(P3.Result.Psbt, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var T FinalizePSBTReturn
+	err = json.Unmarshal(Tdata, &T)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+ 	resultData, err := rpc.SendRawTransaction(T.Result.Hex, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var result SendRawTransactionReturn
+
+	err = json.Unmarshal(resultData, &result)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	txhash := result.Result
+	log.Println("txhash: ", txhash)
 }

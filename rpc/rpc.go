@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/pkg/errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	utils "github.com/Varunram/essentials/utils"
@@ -40,7 +39,6 @@ func PostReq(payload RPCReq) ([]byte, error) {
 		return nil, errors.Wrap(err, "could not marshal json, quitting")
 	}
 
-	log.Println("PAYLODJSON: ", string(payloadJson))
 	req, err = http.NewRequest("POST", BitcoindURL, bytes.NewBuffer(payloadJson))
 	if err != nil {
 		return nil, errors.Wrap(err, "did not POST to bitcoind")
@@ -1307,7 +1305,6 @@ func WalletCreateFundedPSBT(inputs []interface{}, outputs map[string]int, lockti
 		return PostReq(payload)
 	} else {
 		// test mode
-		log.Println("PAYLODJSONCOOL: ", rawpayload)
 		var req *http.Request
 		var err error
 		req, err = http.NewRequest("POST", BitcoindURL, bytes.NewBuffer([]byte(rawpayload)))
