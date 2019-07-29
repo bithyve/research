@@ -7,7 +7,7 @@ import (
 	// btcutils "github.com/bithyve/research/utils"
 	// "github.com/bithyve/research/hdwallet"
 	//"github.com/bithyve/research/bip39"
-	utils "github.com/Varunram/essentials/utils"
+	// utils "github.com/Varunram/essentials/utils"
 	rpc "github.com/bithyve/research/rpc"
 	//"math/big"
 	"log"
@@ -89,9 +89,7 @@ type SendRawTransactionReturn struct {
 	Id     string `json:"id"`
 }
 
-func main() {
-	log.Println(utils.ToBigInt("100"))
-
+func testpsbt() {
 	// Aalice, Abob, Acarol
 	Aalicedata, err := rpc.GetNewAddress("", "")
 	if err != nil {
@@ -241,6 +239,161 @@ func main() {
 	}
 
 	Tdata, err := rpc.FinalizePSBT(P3.Result.Psbt, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var T FinalizePSBTReturn
+	err = json.Unmarshal(Tdata, &T)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	resultData, err := rpc.SendRawTransaction(T.Result.Hex, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var result SendRawTransactionReturn
+
+	err = json.Unmarshal(resultData, &result)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	txhash := result.Result
+	log.Println("txhash: ", txhash)
+}
+
+func main() {
+	Aalicedata, err := rpc.GetNewAddress("", "")
+	if err != nil {
+		log.Fatal("could not generate Aalice")
+	}
+
+	var Aalice GetNewAddressReturn
+
+	err = json.Unmarshal(Aalicedata, &Aalice)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	Kalicedata, err := rpc.GetAddressesInfo(Aalice.Result)
+	if err != nil {
+		log.Fatal("getaddressinfo failed for Kalice")
+	}
+
+	var Kalice GetAddressesInfoReturn
+
+	err = json.Unmarshal(Kalicedata, &Kalice)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	alicePubkey := Kalice.Result.Address
+	log.Println("ALICE's pubkey: ", alicePubkey)
+
+	transitorydata, err := rpc.GetNewAddress("", "")
+	if err != nil {
+	  log.Fatal("could not generate Transitory address")
+	}
+
+	var Transitory GetNewAddressReturn
+
+	err = json.Unmarshal(transitorydata, &Transitory)
+	if err != nil {
+	  log.Fatal(err)
+	}
+
+	Ktransitorydata, err := rpc.GetAddressesInfo(Transitory.Result)
+	if err != nil {
+	  log.Fatal("getaddressinfo failed for Ktransitory")
+	}
+
+	var Ktransitory GetAddressesInfoReturn
+
+	err = json.Unmarshal(Ktransitorydata, &Ktransitory)
+	if err != nil {
+	  log.Fatal(err)
+	}
+
+	log.Println("transitory pubkey: ", Ktransitory.Result.Address)
+	transitoryPubkey := Ktransitory.Result.Address
+
+	Aserverdata, err := rpc.GetNewAddress("", "")
+	if err != nil {
+	  log.Fatal("could not generate Aserver")
+	}
+
+	var Aserver GetNewAddressReturn
+
+	err = json.Unmarshal(Aserverdata, &Aserver)
+	if err != nil {
+	  log.Fatal(err)
+	}
+
+	Kserverdata, err := rpc.GetAddressesInfo(Aserver.Result)
+	if err != nil {
+	  log.Fatal("getaddressinfo failed for Kserver")
+	}
+
+	var Kserver GetAddressesInfoReturn
+
+	err = json.Unmarshal(Kserverdata, &Kserver)
+	if err != nil {
+	  log.Fatal(err)
+	}
+
+	log.Println("server's pubkey: ", Kserver.Result.Address)
+	serverPubkey := Kserver.Result.Address
+
+	multiSigAddressData, err := rpc.AddMultisigAddress("2", transitoryPubkey, serverPubkey)
+	if err != nil {
+		log.Fatal("could not generate new multisig address")
+	}
+
+	var multisig AddMultisigAddressReturn
+
+	err = json.Unmarshal(multiSigAddressData, &multisig)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	multiSigAddress := multisig.Result.Address
+
+	// to get some funds in the multisig account, technically alice should send funds
+	// to the multisig account
+	_, err = rpc.GenerateToAddress("101", multiSigAddress)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rawpayload := `{"jsonrpc":"1.0","id":"curltext","method":"walletcreatefundedpsbt","params":[`
+	rawpayload += `[],{"` + multiSigAddress + `":50},0]}`
+
+	psbtData, err := rpc.TestWalletCreateFundedPSBT(rawpayload)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var psbt PsbtReturn
+	err = json.Unmarshal(psbtData, &psbt)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	P2data, err := rpc.WalletProcessPSBT(psbt.Result.Psbt, true, "", false)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var P2 PsbtReturn
+	err = json.Unmarshal(P2data, &P2)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	Tdata, err := rpc.FinalizePSBT(P2.Result.Psbt, false)
 	if err != nil {
 		log.Fatal(err)
 	}
