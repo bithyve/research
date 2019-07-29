@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/pkg/errors"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	utils "github.com/Varunram/essentials/utils"
@@ -39,6 +40,7 @@ func PostReq(payload RPCReq) ([]byte, error) {
 		return nil, errors.Wrap(err, "could not marshal json, quitting")
 	}
 
+	log.Println("PAYLODJSON: ", string(payloadJson))
 	req, err = http.NewRequest("POST", BitcoindURL, bytes.NewBuffer(payloadJson))
 	if err != nil {
 		return nil, errors.Wrap(err, "did not POST to bitcoind")
@@ -1286,6 +1288,49 @@ func UnloadWallet(walletName string) ([]byte, error) {
 }
 
 // TODO: add walletcreatefundedpsbt method
+
+func WalletCreateFundedPSBT(inputs []interface{}, outputs map[string]int, locktime int, options map[string]interface{}, bip32Derivs bool, rawpayload string) ([]byte, error) {
+	var payload RPCReq
+	payload.Method = "walletcreatefundedpsbt"
+
+	var temp []interface{}
+	if len(inputs) != 0 {
+		temp = append(temp, inputs)
+		temp = append(temp, outputs)
+		temp = append(temp, locktime)
+
+		if bip32Derivs {
+			temp = append(temp, bip32Derivs)
+		}
+
+		payload.Params = temp
+		return PostReq(payload)
+	} else {
+		// test mode
+		log.Println("PAYLODJSONCOOL: ", rawpayload)
+		var req *http.Request
+		var err error
+		req, err = http.NewRequest("POST", BitcoindURL, bytes.NewBuffer([]byte(rawpayload)))
+		if err != nil {
+			return nil, errors.Wrap(err, "did not POST to bitcoind")
+		}
+
+		req.SetBasicAuth(RPCUser, RPCPass)
+
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return nil, errors.Wrap(err, "did not make http request to bitcoind")
+		}
+
+		defer res.Body.Close()
+		x, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return nil, errors.Wrap(err, "did not read from ioutil")
+		}
+
+		return x, nil
+	}
+}
 
 func WalletLock() ([]byte, error) {
 	var payload RPCReq
