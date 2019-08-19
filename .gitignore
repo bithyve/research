@@ -17,3 +17,4 @@ miniscript/Cargo.lock
 ln/thor/thor
 psbttest/psbttest
 points/points
+sigs/sigs

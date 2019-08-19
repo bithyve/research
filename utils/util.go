@@ -9,6 +9,9 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"math/big"
+	"crypto/rand"
+	"io"
+	"log"
 
 	"github.com/btcsuite/btcd/btcec"
 	"golang.org/x/crypto/ripemd160"

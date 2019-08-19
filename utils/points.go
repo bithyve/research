@@ -1,9 +1,6 @@
 package utils
 
 import (
-	"crypto/rand"
-	"io"
-	"log"
 	"math/big"
 )
 
@@ -25,8 +22,30 @@ func (p *Point) Add(x1, x2 Point) {
 	p.X, p.Y = Curve.Add(x1.X, x2.X, x1.Y, x2.Y)
 }
 
+func Add(x1, x2 Point) Point {
+	var p Point
+	p.X, p.Y = Curve.Add(x1.X, x2.X, x1.Y, x2.Y)
+	return p
+}
+
 func (p *Point) ScalarMult(a []byte) {
 	p.X, p.Y = Curve.ScalarMult(p.X, p.Y, a)
+}
+
+func ScalarMult(P Point, a []byte) Point {
+	var p Point
+	p.X, p.Y = Curve.ScalarMult(P.X, P.Y, a)
+	return p
+}
+
+func Sub(x1, x2 Point) Point {
+	var p Point
+
+	negx2 := new(big.Int).Neg(x2.Y)
+
+	p.Set(Curve.Add(x1.X, x1.Y, x2.X, new(big.Int).Mod(negx2, Curve.P)))
+
+	return p
 }
 
 func (p *Point) Bytes() []byte {
