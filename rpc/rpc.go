@@ -695,6 +695,12 @@ func GetDescriptorInfo(descriptor string) ([]byte, error) {
 	return PostReq(payload)
 }
 
+type SignMessageWithPrivkeyReturn struct {
+	Result string `json:"result"`
+	Error string `json:"error"`
+	Id string `json:"id"`
+}
+
 func SignMessageWithPrivkey(privkey string, message string) ([]byte, error) {
 	var payload RPCReq
 	payload.Method = "signmessagewithprivkey"
