@@ -697,8 +697,8 @@ func GetDescriptorInfo(descriptor string) ([]byte, error) {
 
 type SignMessageWithPrivkeyReturn struct {
 	Result string `json:"result"`
-	Error string `json:"error"`
-	Id string `json:"id"`
+	Error  string `json:"error"`
+	Id     string `json:"id"`
 }
 
 func SignMessageWithPrivkey(privkey string, message string) ([]byte, error) {

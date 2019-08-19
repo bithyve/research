@@ -90,3 +90,19 @@ func AddPubKeys(k1, k2 []byte) []byte {
 	x2, y2 := Expand(k2)
 	return Compress(Curve.Add(x1, y1, x2, y2))
 }
+
+func NewPrivateKey() (*big.Int, error) {
+	b := make([]byte, Curve.Params().BitSize/8+8)
+	_, err := io.ReadFull(rand.Reader, b)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var one = new(big.Int).SetInt64(1)
+	x := new(big.Int).SetBytes(b)
+	n := new(big.Int).Sub(Curve.Params().N, one)
+	x.Mod(x, n)
+	x.Add(x, one)
+
+	return x, nil
+}

@@ -295,26 +295,26 @@ func main() {
 
 	transitorydata, err := rpc.GetNewAddress("", "")
 	if err != nil {
-	  log.Fatal("could not generate Transitory address")
+		log.Fatal("could not generate Transitory address")
 	}
 
 	var Transitory GetNewAddressReturn
 
 	err = json.Unmarshal(transitorydata, &Transitory)
 	if err != nil {
-	  log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	Ktransitorydata, err := rpc.GetAddressesInfo(Transitory.Result)
 	if err != nil {
-	  log.Fatal("getaddressinfo failed for Ktransitory")
+		log.Fatal("getaddressinfo failed for Ktransitory")
 	}
 
 	var Ktransitory GetAddressesInfoReturn
 
 	err = json.Unmarshal(Ktransitorydata, &Ktransitory)
 	if err != nil {
-	  log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	log.Println("transitory pubkey: ", Ktransitory.Result.Address)
@@ -322,26 +322,26 @@ func main() {
 
 	Aserverdata, err := rpc.GetNewAddress("", "")
 	if err != nil {
-	  log.Fatal("could not generate Aserver")
+		log.Fatal("could not generate Aserver")
 	}
 
 	var Aserver GetNewAddressReturn
 
 	err = json.Unmarshal(Aserverdata, &Aserver)
 	if err != nil {
-	  log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	Kserverdata, err := rpc.GetAddressesInfo(Aserver.Result)
 	if err != nil {
-	  log.Fatal("getaddressinfo failed for Kserver")
+		log.Fatal("getaddressinfo failed for Kserver")
 	}
 
 	var Kserver GetAddressesInfoReturn
 
 	err = json.Unmarshal(Kserverdata, &Kserver)
 	if err != nil {
-	  log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	log.Println("server's pubkey: ", Kserver.Result.Address)

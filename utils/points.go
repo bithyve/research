@@ -1,14 +1,11 @@
-package points
+package utils
 
 import (
+	"crypto/rand"
+	"io"
+	"log"
 	"math/big"
-
-	"github.com/btcsuite/btcd/btcec"
 )
-
-// have all the point related stuff in one place so its easier to import elsewhere
-
-var Curve *btcec.KoblitzCurve = btcec.S256() // take only the curve, can't use other stuff
 
 type Point struct {
 	X *big.Int
@@ -44,4 +41,15 @@ type Elgamal struct {
 func (e *Elgamal) Set(x, y Point) {
 	e.X = x
 	e.Y = y
+}
+
+func PubkeyPointsFromPrivkey(privkey *big.Int) (*big.Int, *big.Int) {
+	x, y := Curve.ScalarBaseMult(privkey.Bytes())
+	return x, y
+}
+
+func PointFromPrivkey(privkey *big.Int) Point {
+	var x Point
+	x.X, x.Y = Curve.ScalarBaseMult(privkey.Bytes())
+	return x
 }
