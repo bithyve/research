@@ -205,8 +205,71 @@ func test3() {
 	}
 }
 
+func test4() {
+	// https://blockstream.info/tx/cd141d5cbbd081f2d5807d835d49d49f15a9728c2fa674e7ec79182c1315d207?expand
+	tx := wire.NewMsgTx(1)
+	targetHash := "cd141d5cbbd081f2d5807d835d49d49f15a9728c2fa674e7ec79182c1315d207"
+	targetSize := 370
+
+	txin1 := new(wire.TxIn)
+	txin2 := new(wire.TxIn)
+
+	err := addScriptSig(txin1, "483045022100c477f46a7bc670e11ee5466d312c9fd587e01a0328752fadd82107a40c28fe420220728acd291534aa8a2e2e2970ded7c39dfdd83f6847a1c208701e560461654246012103b23d3a7097833e05193307b104c7bbceb482a5e69d9c754120fc3f82c7d1475c")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = addPrevOut(txin1, "fa65a71767d5be55620b3d55214fe67eaf108860427f2b368a2b17ba301e77cc", 1)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = addWitness(txin1)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	addSequence(txin1, 0xffffffff)
+
+	tx.AddTxIn(txin1)
+
+	err = addScriptSig(txin2, "47304402203459b842186a374015e409ffe4d2d67101c7cc6bc68f62aeed6f5499c2086c68022034471874999d4e2452c1493bf002562a7b279bb58af6ee414a50fe04892fcce2012103b16ac8c3821b24d5071d26b2a123031515c65e026bbf53b3d7a2ddd5e4270950")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = addPrevOut(txin2, "b67e3daf478b28cf68828f75632fb5e281c9475d3204242c2c6e46e031dd2191", 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = addWitness(txin2)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	addSequence(txin2, 0xfffffffe)
+
+	tx.AddTxIn(txin2)
+
+	err = addScriptPubkey(tx, "76a914081fbdf61f3e1fc1d7cb252109870a56f64fa80c88ac", 25777652)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = addScriptPubkey(tx, "6a146f6d6e69000000000000001f0000002115d1ed00", 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if tx.TxHash().String() != targetHash || tx.SerializeSize() != targetSize {
+		log.Fatal("test 4 target hash doesn't match")
+	}
+}
+
 func main() {
 	test1()
 	test2()
 	test3()
+	test4()
 }
