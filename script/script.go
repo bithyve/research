@@ -9,125 +9,61 @@ import (
 	"github.com/btcsuite/btcd/wire"
 )
 
-func main1() {
-	// https://blockstream.info/tx/baa591f2f4505f189b84f7e518eb390c5049b4fd0441a4fb798cc21b5a7f91f1?expand
-	tx := wire.NewMsgTx(2)
-	tx.LockTime = 0
-	// TxIn     []*TxIn
-	// TxOut    []*TxOut
-	// LockTime uint32
+func test2() {
+	target1Hash := "0f167d1385a84d1518cfee208b653fc9163b605ccf1b75347e2850b3e2eb19f3"
+	target2Hash := "0858eab78e77b6b033da30f46699996396cf48fcf625a783c85a51403e175e74"
+	// https://blockstream.info/tx/a753cb59cdfc769d067fc0d7853ce5317be99e06a56acf2bc3419cd042eb549a
 
-	op, err := chainhash.NewHashFromStr("525fc8fea737c827d600b09fcbb002e518d5b9498230c0f596ea1ba60358cc20")
+	// From block 23157 in a past version of segnet.
+	tx := wire.NewMsgTx(1)
+
+	opBytes, err := hex.DecodeString("a53352d5135766f03076597418263da2d9c958315968fea823529467481ff9cd")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	prevOut := wire.NewOutPoint(op, 0)
+	var opHash chainhash.Hash
+	opHash.SetBytes(opBytes)
+	op := wire.OutPoint{
+		Hash:  opHash,
+		Index: 19,
+	}
 
-	scriptSig, err := hex.DecodeString("1600143e33e3c857f5e4374eb16c65149eb9eeeb5bd7ce")
+	witness1, err := hex.DecodeString("3043021f4d2381dc97f182abd8185f51753018523212f5ddc07cc4e63a8dc03658da190220608b5c4d92b86b6de7d78ef23a2fa735bcb59b914a48b0e187c5e7569a18197001")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	witness1, err := hex.DecodeString("3044022009ee2956dfe779c8120db092c86d8fc8d95741a193231151a203ed246444fbcd02203bec6d837a7d11e69375a4130bd56251fccbbdd262ed6ba4bb693310209bc33401")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	witness2, err := hex.DecodeString("039ff0c4745bf9b5b3b85ddacff408b7d6288f832a53bc016267d5f5b6a52f92c4")
+	witness2, err := hex.DecodeString("0307ead084807eb76346df6977000c89392f45c76425b26181f521d7f370066a8f")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	witness := [][]byte{witness1, witness2}
 
-	txin := wire.NewTxIn(prevOut, scriptSig, witness)
-	txin.Sequence = 0xffffffff
-	tx.AddTxIn(txin)
+	txIn := wire.TxIn{
+		PreviousOutPoint: op,
+		Witness:          witness,
+		Sequence:         0xffffffff,
+	}
 
-	scriptPubkey1, err := hex.DecodeString("a91402edb870b533709fc15643eb24e94b7d31bea22787")
+	scriptPubKey, err := hex.DecodeString("00149ddac6f39d51e0398e532a22c41ba189406a8523")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	txout1 := wire.NewTxOut(int64(25025), scriptPubkey1)
+	txOut := wire.NewTxOut(int64(395019), scriptPubKey)
 
-	scriptPubkey2, err := hex.DecodeString("76a914d268b87b79af4c5ab430464df058ece832b98a4988ac")
-	if err != nil {
-		log.Println("scriptsig error")
-		log.Fatal(err)
-	}
-
-	txout2 := wire.NewTxOut(int64(275), scriptPubkey2)
-
-	tx.AddTxOut(txout1)
-	tx.AddTxOut(txout2)
-
-	log.Println(tx.WitnessHash())
-	log.Println(tx.TxHash())
-	log.Println(tx.SerializeSize())
-}
-
-func main() {
-	// https://blockstream.info/tx/a753cb59cdfc769d067fc0d7853ce5317be99e06a56acf2bc3419cd042eb549a
-	tx := wire.NewMsgTx(2)
+	tx.AddTxIn(&txIn)
+	tx.AddTxOut(txOut)
 	tx.LockTime = 0
-	// TxIn     []*TxIn
-	// TxOut    []*TxOut
-	// LockTime uint32
 
-	op := chainhash.Hash{}
-	prevOut := wire.NewOutPoint(&op, 0xffffffff)
-
-	scriptSig, err := hex.DecodeString("0396050941d757b09af6bbe141d757b09ac809be2f4254432e544f502ffabe6d6d1f8f5ea2928a9ee1b5db50404a89bfba26339b514550af5f2626456a47f2c5798000000000000000db0084143cc4000000000000")
-	if err != nil {
-		log.Fatal(err)
+	if tx.WitnessHash().String() != target2Hash || tx.TxHash().String() != target1Hash {
+		log.Fatal("txhashes don't match")
 	}
-
-	witness1, err := hex.DecodeString("0000000000000000000000000000000000000000000000000000000000000000")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	witness := [][]byte{witness1}
-
-	txin := wire.NewTxIn(prevOut, scriptSig, witness)
-	txin.Sequence = 0xffffffff
-	tx.AddTxIn(txin)
-
-	scriptPubkey1, err := hex.DecodeString("76a914ba507bae8f1643d2556000ca26b9301b9069dc6b88ac")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	txout1 := wire.NewTxOut(int64(1289673184), scriptPubkey1)
-
-	scriptPubkey2, err := hex.DecodeString("6a24aa21a9edbab6d0ff211c4cb047fbf9d9ddb6b6ee1bef8e8483c4650254f2008017648785")
-	if err != nil {
-		log.Println("scriptsig error")
-		log.Fatal(err)
-	}
-
-	txout2 := wire.NewTxOut(int64(0), scriptPubkey2)
-
-	scriptPubkey3, err := hex.DecodeString("6a24b9e11b6d6c8a82f163071ef21c19fd7dbd584f6f4bd2e7aa5836cde657c9c80f43797fc1")
-	if err != nil {
-		log.Println("scriptsig error")
-		log.Fatal(err)
-	}
-
-	txout3 := wire.NewTxOut(int64(0), scriptPubkey3)
-
-	tx.AddTxOut(txout1)
-	tx.AddTxOut(txout2)
-	tx.AddTxOut(txout3)
-
-	log.Println(tx.WitnessHash())
-	log.Println(tx.TxHash())
-	log.Println(tx.SerializeSize())
 }
 
-func Test11TxHash() {
+func test3() {
 	// https://blockstream.info/tx/f051e59b5e2503ac626d03aaeac8ab7be2d72ba4b7e97119c5852d70d52dcb86
 	tx := wire.NewMsgTx(1)
 	targetHash := "f051e59b5e2503ac626d03aaeac8ab7be2d72ba4b7e97119c5852d70d52dcb86"
@@ -155,7 +91,127 @@ func Test11TxHash() {
 	txout2 := wire.NewTxOut(int64(5000000000), scriptPubkey)
 	tx.AddTxOut(txout2)
 
-	if tx.TxHash().String() != targetHash && tx.SerializeSize() != targetSize {
-		log.Fatal("target hash doesn't match")
+	if tx.TxHash().String() != targetHash || tx.SerializeSize() != targetSize {
+		log.Fatal("test 3 target hash doesn't match")
 	}
+}
+
+func test4() {
+	tx := wire.NewMsgTx(2)
+	targetHash := "baa591f2f4505f189b84f7e518eb390c5049b4fd0441a4fb798cc21b5a7f91f1"
+	targetSize := 249
+
+	scriptSig, err := hex.DecodeString("1600143e33e3c857f5e4374eb16c65149eb9eeeb5bd7ce")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	op, err := chainhash.NewHashFromStr("525fc8fea737c827d600b09fcbb002e518d5b9498230c0f596ea1ba60358cc20")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	prevOut := wire.NewOutPoint(op, 0)
+
+	witness1, err := hex.DecodeString("3044022009ee2956dfe779c8120db092c86d8fc8d95741a193231151a203ed246444fbcd02203bec6d837a7d11e69375a4130bd56251fccbbdd262ed6ba4bb693310209bc33401")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	witness2, err := hex.DecodeString("039ff0c4745bf9b5b3b85ddacff408b7d6288f832a53bc016267d5f5b6a52f92c4")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	witness := [][]byte{witness1, witness2}
+
+	txin := wire.NewTxIn(prevOut, scriptSig, witness)
+	txin.Sequence = 0xffffffff
+	tx.AddTxIn(txin)
+
+	scriptPubkey1, err := hex.DecodeString("a91402edb870b533709fc15643eb24e94b7d31bea22787")
+	if err != nil {
+		log.Println("scriptsig error")
+		log.Fatal(err)
+	}
+
+	txout1 := wire.NewTxOut(int64(250250), scriptPubkey1)
+	tx.AddTxOut(txout1)
+
+	scriptPubkey2, err := hex.DecodeString("76a914d268b87b79af4c5ab430464df058ece832b98a4988ac")
+	if err != nil {
+		log.Println("scriptsig error")
+		log.Fatal(err)
+	}
+
+	txout2 := wire.NewTxOut(int64(2750), scriptPubkey2)
+	tx.AddTxOut(txout2)
+
+	if tx.TxHash().String() != targetHash || tx.SerializeSize() != targetSize {
+		log.Fatal("test4 target hash doesn't match")
+	}
+}
+
+func test5() {
+	// https://blockstream.info/tx/f051e59b5e2503ac626d03aaeac8ab7be2d72ba4b7e97119c5852d70d52dcb86
+	tx := wire.NewMsgTx(1)
+	targetHash := "a753cb59cdfc769d067fc0d7853ce5317be99e06a56acf2bc3419cd042eb549a"
+	targetSize := 300
+
+	scriptSig, err := hex.DecodeString("0396050941d757b09af6bbe141d757b09ac809be2f4254432e544f502ffabe6d6d1f8f5ea2928a9ee1b5db50404a89bfba26339b514550af5f2626456a47f2c5798000000000000000db0084143cc4000000000000")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	op := chainhash.Hash{}
+	prevOut := wire.NewOutPoint(&op, 0xffffffff)
+
+	witness1, err := hex.DecodeString("0000000000000000000000000000000000000000000000000000000000000000")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	witness := [][]byte{witness1}
+
+	txin := wire.NewTxIn(prevOut, scriptSig, witness)
+	txin.Sequence = 0xffffffff
+	tx.AddTxIn(txin)
+
+	scriptPubkey1, err := hex.DecodeString("76a914ba507bae8f1643d2556000ca26b9301b9069dc6b88ac")
+	if err != nil {
+		log.Println("scriptsig error")
+		log.Fatal(err)
+	}
+
+	txout1 := wire.NewTxOut(int64(1289673184), scriptPubkey1)
+	tx.AddTxOut(txout1)
+
+	scriptPubkey2, err := hex.DecodeString("6a24aa21a9edbab6d0ff211c4cb047fbf9d9ddb6b6ee1bef8e8483c4650254f2008017648785")
+	if err != nil {
+		log.Println("scriptsig error")
+		log.Fatal(err)
+	}
+
+	txout2 := wire.NewTxOut(int64(0), scriptPubkey2)
+	tx.AddTxOut(txout2)
+
+	scriptPubkey3, err := hex.DecodeString("6a24b9e11b6d6c8a82f163071ef21c19fd7dbd584f6f4bd2e7aa5836cde657c9c80f43797fc1")
+	if err != nil {
+		log.Println("scriptsig error")
+		log.Fatal(err)
+	}
+
+	txout3 := wire.NewTxOut(int64(0), scriptPubkey3)
+	tx.AddTxOut(txout3)
+
+	if tx.TxHash().String() != targetHash || tx.SerializeSize() != targetSize {
+		log.Fatal("test 5 target hash doesn't match")
+	}
+}
+
+func main() {
+	test2()
+	test3()
+	test4()
+	test5()
 }
