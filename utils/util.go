@@ -109,3 +109,7 @@ func NewPrivateKey() (*big.Int, error) {
 
 	return x, nil
 }
+
+func BytesToNum(byteString []byte) *big.Int {
+	return new(big.Int).SetBytes(byteString)
+}
