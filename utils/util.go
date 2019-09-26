@@ -5,13 +5,14 @@
 package utils
 
 import (
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
-	"math/big"
-	"crypto/rand"
 	"io"
+	"io/ioutil"
 	"log"
+	"math/big"
 
 	"github.com/btcsuite/btcd/btcec"
 	"golang.org/x/crypto/ripemd160"
@@ -33,6 +34,19 @@ func Sha256(inputs ...[]byte) []byte {
 		shaNew.Write(input)
 	}
 	return shaNew.Sum(nil)
+}
+
+func Sha256File(fileName string) ([]byte, error) {
+	data, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	data = data[0:len(data)-1] // splice off the \n at the end
+	h := sha256.New()
+	h.Write(data)
+
+	return h.Sum(nil), nil
 }
 
 func DoubleSha256(data []byte) []byte {
