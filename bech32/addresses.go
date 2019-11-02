@@ -4,9 +4,8 @@ import (
 	"github.com/bithyve/research/base58"
 	btcutils "github.com/bithyve/research/utils"
 	"github.com/btcsuite/btcd/btcec"
-	"github.com/skip2/go-qrcode"
-
 	"github.com/pkg/errors"
+	"github.com/skip2/go-qrcode"
 )
 
 var Curve *btcec.KoblitzCurve = btcec.S256()
@@ -55,7 +54,7 @@ func Bech32ToBase58Addr(hrp, addr string) (string, error) {
 		arr = append(arr, byte(vals))
 	}
 	address := append(prefix, arr...)
-	chksum := btcutils.DoubleSha256(address)
+	chksum := DoubleSha256(address)
 	return base58.Encode(append(address, chksum[:4]...)), nil
 }
 

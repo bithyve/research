@@ -3,9 +3,10 @@ package bitcoinrpc
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/pkg/errors"
 
 	utils "github.com/Varunram/essentials/utils"
 )

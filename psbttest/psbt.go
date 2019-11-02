@@ -371,7 +371,13 @@ func main() {
 	rawpayload := `{"jsonrpc":"1.0","id":"curltext","method":"walletcreatefundedpsbt","params":[`
 	rawpayload += `[],{"` + multiSigAddress + `":50},0]}`
 
-	psbtData, err := rpc.TestWalletCreateFundedPSBT(rawpayload)
+	var temp1 []interface{}
+	var temp2 map[string]int
+	var temp3 map[string]interface{}
+	var temp4 bool
+	var temp5 int
+
+	psbtData, err := rpc.WalletCreateFundedPSBT(temp1, temp2, temp5, temp3, temp4, rawpayload)
 	if err != nil {
 		log.Fatal(err)
 	}
